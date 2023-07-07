@@ -17,14 +17,12 @@ namespace RepositoryLayer.Service
     public class UserRepository : IUserRepository
     {
         private readonly FundoContext fundoContext;
-        private readonly IConfiguration configuration;
-        private readonly IBus _bus;
+        private readonly IConfiguration configuration; // JWT token
 
-        public UserRepository(FundoContext fundoContext, IConfiguration configuration, IBus bus)
+        public UserRepository(FundoContext fundoContext, IConfiguration configuration)
         {
             this.fundoContext = fundoContext;
             this.configuration = configuration;
-            _bus = bus;
         }
 
         public UserEntity UserRegistration(RegisterModel registerModel)
@@ -75,7 +73,6 @@ namespace RepositoryLayer.Service
             }
         }
 
-
         public bool CheckingEmailExistOrNot(string email)
         {
             var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
@@ -95,6 +92,15 @@ namespace RepositoryLayer.Service
             forgotPassWordModel.Token = GenerateToken(result.Email, result.UserID);
             forgotPassWordModel.UserID = result.UserID;
             return forgotPassWordModel;
+        }
+
+        public bool ResetPassword(UserResetPasswordModel userResetPasswordModel,string email)
+        {
+            var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
+            result.Password = EncodePasswordToBase64(userResetPasswordModel.ConfirmPassword);
+
+            fundoContext.SaveChanges();
+            return true;
         }
 
         public string GenerateToken(string email, int userId)

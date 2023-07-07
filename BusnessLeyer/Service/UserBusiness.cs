@@ -34,5 +34,10 @@ namespace BusinessLeyer.Service
             return userRepository.UserForgotPassword(email);
         }
 
+        public bool ResetPassword(UserResetPasswordModel userResetPasswordModel, string email)
+        {
+            return userRepository.ResetPassword(userResetPasswordModel, email);
+        }
+
     }
 }

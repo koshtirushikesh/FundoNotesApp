@@ -13,5 +13,6 @@ namespace BusinessLeyer.Interface
         public string UserLogin(LoginModel loginModel);
         public bool CheckingEmailExistOrNot(string email);
         public ForgotPassWordModel UserForgotPassword(string email);
+        public bool ResetPassword(UserResetPasswordModel userResetPasswordModel, string email);
     }
 }

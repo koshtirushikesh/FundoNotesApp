@@ -1,6 +1,7 @@
 ﻿using BusinessLeyer.Interface;
 using CommanLayer;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Entity;
 using System;
@@ -67,6 +68,19 @@ namespace FundoNotesApplication.Controllers
                 return Ok(new ResponseModel<string> { status = true, message = "email send succesfull", response = email });
             }
             return BadRequest(new ResponseModel<string> { status = false, message = "email not send succesfull", response = email });
+        }
+
+        [Authorize]
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(UserResetPasswordModel userResetPasswordModel)
+        {
+            string email = User.FindFirst("Email").Value;
+            if(userResetPasswordModel.Password == userResetPasswordModel.ConfirmPassword)
+            {
+                bool result = userBusiness.ResetPassword(userResetPasswordModel,email);
+                return Ok(new ResponseModel<string> { status = true, message = "password change succesfull", response = email });
+            }
+            return BadRequest(Ok(new ResponseModel<string> { status = true, message = "password is not same as confirm password"}));
         }
     }
 }
