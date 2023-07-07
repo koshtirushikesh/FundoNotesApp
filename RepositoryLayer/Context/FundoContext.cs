@@ -11,5 +11,6 @@ namespace RepositoryLayer.Context
         }
 
         public DbSet<UserEntity> User { get; set; }
+        public DbSet<NoteEntity> Note { get; set; }
     }
 }
