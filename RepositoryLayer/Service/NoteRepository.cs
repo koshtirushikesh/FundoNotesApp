@@ -206,11 +206,11 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public string AddLable(string LableName, int UserID)
+        public string AddLable(string LableName, int UserID ,int noteID)
         {
             try
             {
-                var result = fundoContext.Note.Where(x => x.UserID == UserID).FirstOrDefault();
+                var result = fundoContext.Note.Where(x => x.UserID == UserID && x.NoteID == noteID).FirstOrDefault();
                 if (result != null)
                 {
                     LableEntity lableEntity = new LableEntity();
