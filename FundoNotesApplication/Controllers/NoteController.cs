@@ -2,9 +2,9 @@
 using CommanLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using System;
+using System.Collections.Generic;
 
 namespace FundoNotesApplication.Controllers
 {
@@ -41,7 +41,25 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        
+        [HttpPost("get-all-note")]
+        public IActionResult GetAllNote()
+        {
+            try
+            {
+                List<NoteEntity> notes = noteBusiness.GetAllNotes();
+                if (notes != null)
+                {
+                    return Ok(new ResponseModel<List<NoteEntity>> { status = true, message = "All Notes are featch", response = notes });
+                }
+
+                return BadRequest(new ResponseModel<string> { status = false, message = "error while featching Notes" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpPost("archive-unarchive")]
         public IActionResult ArchiveAndUnArchive(int noteID)
         {
@@ -64,7 +82,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        
+
         [HttpPost("pin-unpinned")]
         public IActionResult PinedAndUnPinned(int noteID)
         {
@@ -97,14 +115,14 @@ namespace FundoNotesApplication.Controllers
 
                 NoteEntity noteEntity = noteBusiness.TrashAndUnTrash(noteID, userIDInt);
 
-                if(noteEntity != null)
+                if (noteEntity != null)
                 {
-                    return Ok(new ResponseModel<NoteEntity> { status = true, message = "trash/untrash is succesfull" , response = noteEntity});
+                    return Ok(new ResponseModel<NoteEntity> { status = true, message = "trash/untrash is succesfull", response = noteEntity });
                 }
 
                 return BadRequest(new ResponseModel<NoteEntity> { status = false, message = "trash/untrash is not succesfull" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
