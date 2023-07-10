@@ -26,61 +26,92 @@ namespace FundoNotesApplication.Controllers
         [HttpPost("register")]
         public IActionResult UserRegistration(RegisterModel registerModel)
         {
-            if (userBusiness.CheckingEmailExistOrNot(registerModel.Email))
+            try
             {
-                return BadRequest(new ResponseModel<UserEntity> { status = false, message = "The email all ready exist / user registration not successfull" });
+                if (userBusiness.CheckingEmailExistOrNot(registerModel.Email))
+                {
+                    return BadRequest(new ResponseModel<UserEntity> { status = false, message = "The email all ready exist / user registration not successfull" });
+                }
+                else
+                {
+                    var registration = userBusiness.UserRegistration(registerModel);
+                    return Ok(new ResponseModel<UserEntity> { status = true, message = "user registration successfull", response = registration });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var registration = userBusiness.UserRegistration(registerModel);
-                return Ok(new ResponseModel<UserEntity> { status = true, message = "user registration successfull", response = registration });
+                throw ex;
             }
         }
 
         [HttpPost("login")]
         public IActionResult UserLogin(LoginModel loginModel)
         {
-            var login = userBusiness.UserLogin(loginModel);
+            try
+            {
+                var login = userBusiness.UserLogin(loginModel);
 
-            if (login != null)
-            {
-                return Ok(new ResponseModel<string> { status = true, message = "login succesfull", response = login });
+                if (login != null)
+                {
+                    return Ok(new ResponseModel<string> { status = true, message = "login succesfull", response = login });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<string> { status = false, message = "login not succesfull" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(new ResponseModel<string> { status = false, message = "login not succesfull" });
+                throw ex;
             }
         }
 
         [HttpPost("forgot-password")]
         public async Task<IActionResult> UserForgotPassword(string email)
         {
-            if (userBusiness.CheckingEmailExistOrNot(email))
+            try
             {
-                Send send = new Send();
-                ForgotPassWordModel forgotPasswordModel = userBusiness.UserForgotPassword(email);
-                send.SendingMail(forgotPasswordModel.Email, forgotPasswordModel.Token);
+                if (userBusiness.CheckingEmailExistOrNot(email))
+                {
+                    Send send = new Send();
+                    ForgotPassWordModel forgotPasswordModel = userBusiness.UserForgotPassword(email);
+                    send.SendingMail(forgotPasswordModel.Email, forgotPasswordModel.Token);
 
-                Uri uri = new Uri("rabbitmq://localhost/FundoNotesEmail_Queue");
-                var endPoint = await _bus.GetSendEndpoint(uri);
+                    Uri uri = new Uri("rabbitmq://localhost/FundoNotesEmail_Queue");
+                    var endPoint = await _bus.GetSendEndpoint(uri);
 
-                await endPoint.Send(forgotPasswordModel);
-                return Ok(new ResponseModel<string> { status = true, message = "email send succesfull", response = email });
+                    await endPoint.Send(forgotPasswordModel);
+                    return Ok(new ResponseModel<string> { status = true, message = "email send succesfull", response = email });
+                }
+                return BadRequest(new ResponseModel<string> { status = false, message = "email not send succesfull", response = email });
             }
-            return BadRequest(new ResponseModel<string> { status = false, message = "email not send succesfull", response = email });
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         [Authorize]
         [HttpPost("reset-password")]
         public IActionResult ResetPassword(UserResetPasswordModel userResetPasswordModel)
         {
-            string email = User.FindFirst("Email").Value;
-            if(userResetPasswordModel.Password == userResetPasswordModel.ConfirmPassword)
+            try
             {
-                bool result = userBusiness.ResetPassword(userResetPasswordModel,email);
-                return Ok(new ResponseModel<string> { status = true, message = "password change succesfull", response = email });
+                string email = User.FindFirst("Email").Value;
+                if (userResetPasswordModel.Password == userResetPasswordModel.ConfirmPassword)
+                {
+                    bool result = userBusiness.ResetPassword(userResetPasswordModel, email);
+                    if(result)
+                    {
+                        return Ok(new ResponseModel<string> { status = true, message = "password change succesfull", response = email });
+                    }
+                }
+                return BadRequest(Ok(new ResponseModel<string> { status = true, message = "password is not same as confirm password" }));
             }
-            return BadRequest(Ok(new ResponseModel<string> { status = true, message = "password is not same as confirm password"}));
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

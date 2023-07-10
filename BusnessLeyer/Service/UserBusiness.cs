@@ -1,8 +1,8 @@
 ﻿using BusinessLeyer.Interface;
 using CommanLayer;
-using Microsoft.Extensions.Configuration;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
+using System;
 
 namespace BusinessLeyer.Service
 {
@@ -16,27 +16,27 @@ namespace BusinessLeyer.Service
 
         public UserEntity UserRegistration(RegisterModel registerModel)
         {
-            return userRepository.UserRegistration(registerModel);
+            try { return userRepository.UserRegistration(registerModel); } catch (Exception ex) { throw ex; }
         }
 
         public string UserLogin(LoginModel loginModel)
         {
-            return userRepository.UserLogin(loginModel);
+            try { return userRepository.UserLogin(loginModel); } catch (Exception ex) { throw ex; }
         }
 
         public bool CheckingEmailExistOrNot(string email)
         {
-            return userRepository.CheckingEmailExistOrNot(email);
+            try { return userRepository.CheckingEmailExistOrNot(email); } catch (Exception ex) { throw ex; }
         }
 
         public ForgotPassWordModel UserForgotPassword(string email)
         {
-            return userRepository.UserForgotPassword(email);
+            try { return userRepository.UserForgotPassword(email); } catch(Exception ex) { throw ex; }
         }
 
         public bool ResetPassword(UserResetPasswordModel userResetPasswordModel, string email)
         {
-            return userRepository.ResetPassword(userResetPasswordModel, email);
+            try { return userRepository.ResetPassword(userResetPasswordModel, email); } catch (Exception ex) { throw ex; }
         }
 
     }

@@ -1,5 +1,5 @@
 ﻿using CommanLayer;
-using MassTransit;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Context;
@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RepositoryLayer.Service
 {
@@ -27,19 +27,26 @@ namespace RepositoryLayer.Service
 
         public UserEntity UserRegistration(RegisterModel registerModel)
         {
-            var result = fundoContext.User.Where(x => x.Email == registerModel.Email).FirstOrDefault();
+            try
+            {
+                var result = fundoContext.User.Where(x => x.Email == registerModel.Email).FirstOrDefault();
 
-            UserEntity userEntity = new UserEntity();
+                UserEntity userEntity = new UserEntity();
 
-            userEntity.FirstName = registerModel.FirstName;
-            userEntity.LastName = registerModel.LastName;
-            userEntity.Email = registerModel.Email;
-            userEntity.Password = EncodePasswordToBase64(registerModel.Password);
+                userEntity.FirstName = registerModel.FirstName;
+                userEntity.LastName = registerModel.LastName;
+                userEntity.Email = registerModel.Email;
+                userEntity.Password = EncodePasswordToBase64(registerModel.Password);
 
-            fundoContext.Add(userEntity);
-            fundoContext.SaveChanges();
+                fundoContext.Add(userEntity);
+                fundoContext.SaveChanges();
 
-            return userEntity;
+                return userEntity;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public static string EncodePasswordToBase64(string password)
@@ -59,66 +66,103 @@ namespace RepositoryLayer.Service
 
         public string UserLogin(LoginModel loginModel)
         {
-            var encodedPassword = EncodePasswordToBase64(loginModel.Password);
-            var result = fundoContext.User.Where(x => x.Email == loginModel.Email && x.Password == encodedPassword).FirstOrDefault();
+            try
+            {
+                var encodedPassword = EncodePasswordToBase64(loginModel.Password);
+                var result = fundoContext.User.Where(x => x.Email == loginModel.Email && x.Password == encodedPassword).FirstOrDefault();
 
-            if (result == null)
-            {
-                return null;
+                if (result == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    var token = GenerateToken(result.Email, result.UserID);
+                    return token;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var token = GenerateToken(result.Email, result.UserID);
-                return token;
+                throw ex;
             }
         }
 
         public bool CheckingEmailExistOrNot(string email)
         {
-            var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
+            try
+            {
+                var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
 
-            if (result == null)
-                return false;
-            else
-                return true;
+                if (result == null)
+                    return false;
+                else
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public ForgotPassWordModel UserForgotPassword(string email)
         {
-            var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
-            
-            ForgotPassWordModel forgotPassWordModel = new ForgotPassWordModel();
-            forgotPassWordModel.Email = result.Email;
-            forgotPassWordModel.Token = GenerateToken(result.Email, result.UserID);
-            forgotPassWordModel.UserID = result.UserID;
-            return forgotPassWordModel;
+            try
+            {
+                var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
+
+                ForgotPassWordModel forgotPassWordModel = new ForgotPassWordModel();
+                forgotPassWordModel.Email = result.Email;
+                forgotPassWordModel.Token = GenerateToken(result.Email, result.UserID);
+                forgotPassWordModel.UserID = result.UserID;
+
+                return forgotPassWordModel;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public bool ResetPassword(UserResetPasswordModel userResetPasswordModel,string email)
+        public bool ResetPassword(UserResetPasswordModel userResetPasswordModel, string email)
         {
-            var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
-            result.Password = EncodePasswordToBase64(userResetPasswordModel.ConfirmPassword);
+            try
+            {
+                var result = fundoContext.User.Where(x => x.Email == email).FirstOrDefault();
+                result.Password = EncodePasswordToBase64(userResetPasswordModel.ConfirmPassword);
 
-            fundoContext.SaveChanges();
-            return true;
+                fundoContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw ex;
+            }
         }
 
         public string GenerateToken(string email, int userId)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
+            try
             {
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+                var claims = new[]
+                {
                 new Claim("Email",email),
                 new Claim("UserID",userId.ToString())
-            };
-            var token = new JwtSecurityToken(configuration["Jwt:Issuer"],
-                configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials);
+                };
+                var token = new JwtSecurityToken(configuration["Jwt:Issuer"],
+                    configuration["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.Now.AddMinutes(60),
+                    signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

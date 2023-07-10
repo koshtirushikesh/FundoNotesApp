@@ -41,7 +41,7 @@ namespace FundoNotesApplication
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
                     Scheme = "Bearer",
-                    
+
                     Reference = new OpenApiReference
                     {
                         Type = ReferenceType.SecurityScheme,
@@ -56,7 +56,7 @@ namespace FundoNotesApplication
                 });
 
             });
-            
+
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -66,6 +66,10 @@ namespace FundoNotesApplication
             services.AddDbContext<FundoContext>(options => options.UseSqlServer(Configuration["ConnectionString:FundooDB"]));
             services.AddTransient<IUserBusiness, UserBusiness>();
             services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddTransient<INoteBusiness, NoteBusiness>();
+            services.AddTransient<INoteRepository, NoteRepository>();
+
             services.AddSwaggerGen();
 
             ConfigureSwagger(services);
@@ -102,7 +106,7 @@ namespace FundoNotesApplication
                         h.Username("guest");
                         h.Password("guest");
                     });
-                    
+
                 }));
             });
             services.AddMassTransitHostedService();
@@ -121,7 +125,7 @@ namespace FundoNotesApplication
 
             app.UseRouting();
 
-            app.UseAuthentication(); 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
