@@ -76,11 +76,11 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public NoteEntity GetNoteByNoteID(int noteID)
+        public NoteEntity GetNoteByNoteID(int noteID,int userID)
         {
             try
             {
-                var resultByNoteID = fundoContext.Note.Where(x => x.NoteID == noteID).FirstOrDefault();
+                var resultByNoteID = fundoContext.Note.Where(x => x.NoteID == noteID && x.UserID == userID).FirstOrDefault();
                 return resultByNoteID;
             }
             catch (Exception ex)

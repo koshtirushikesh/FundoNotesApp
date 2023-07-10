@@ -49,10 +49,52 @@ namespace FundoNotesApplication.Controllers
                 List<NoteEntity> notes = noteBusiness.GetAllNotes();
                 if (notes != null)
                 {
-                    return Ok(new ResponseModel<List<NoteEntity>> { status = true, message = "All Notes are featch", response = notes });
+                    return Ok(new ResponseModel<List<NoteEntity>> { status = true, message = "All Notes are featch successfully", response = notes });
                 }
 
-                return BadRequest(new ResponseModel<string> { status = false, message = "error while featching Notes" });
+                return BadRequest(new ResponseModel<string> { status = false, message = "All Notes are not featch successfully" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("get-all-notes-by-userid")]
+        public IActionResult GetAllNoteByUserID()
+        {
+            try
+            {
+                string userID = User.FindFirst("UserID").Value;
+                int userIDInt = Convert.ToInt32(userID);
+
+                List<NoteEntity> notesByUserID = noteBusiness.GetAllNotesByUserID(userIDInt);
+                if (notesByUserID != null)
+                {
+                    return Ok(new ResponseModel<List<NoteEntity>> { status = true, message = "All Notes by userid are featch successfully", response = notesByUserID });
+                }
+                return BadRequest(new ResponseModel<string> { status = false, message = "All notes by user id are not featch successfully" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("get-note-by-noteID")]
+        public IActionResult GetNoteByNoteID(int noteID)
+        {
+            try
+            {
+                string userID = User.FindFirst("UserID").Value;
+                int userIDInt = Convert.ToInt32(userID);
+
+                NoteEntity noteEntity = noteBusiness.GetNoteByNoteID(noteID,userIDInt);
+                if (noteEntity != null)
+                {
+                    return Ok(new ResponseModel<NoteEntity> { status = true, message = "note by noteID featched succesfully",response = noteEntity });
+                }
+                return BadRequest(new ResponseModel<String> { status = false, message = "note by noteID not featched succesfully" });
             }
             catch (Exception ex)
             {
@@ -127,5 +169,6 @@ namespace FundoNotesApplication.Controllers
                 throw ex;
             }
         }
+
     }
 }

@@ -19,9 +19,15 @@ namespace BusinessLeyer.Service
         {
             try { return noteRepository.AddingNote(userID, noteModel); } catch (Exception ex) { throw ex; }
         }
+
         public List<NoteEntity> GetAllNotes()
         {
             try { return noteRepository.GetAllNotes(); } catch (Exception ex) { throw ex; };
+        }
+
+        public List<NoteEntity> GetAllNotesByUserID(int userID)
+        {
+            try { return noteRepository.GetAllNotesByUserID(userID); } catch (Exception ex) { throw ex; }
         }
 
         public NoteEntity ArchiveAndUnArchive(int noteID, int UserID)
@@ -37,6 +43,11 @@ namespace BusinessLeyer.Service
         public NoteEntity TrashAndUnTrash(int noteID, int UserID)
         {
             try { return noteRepository.TrashAndUnTrash(noteID, UserID); } catch (Exception ex) { throw ex; }
+        }
+
+        public NoteEntity GetNoteByNoteID(int noteID, int userID)
+        {
+            try { return noteRepository.GetNoteByNoteID(noteID, userID); } catch (Exception ex) { throw ex; }
         }
     }
 }
