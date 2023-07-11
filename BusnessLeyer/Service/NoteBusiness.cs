@@ -57,5 +57,10 @@ namespace BusinessLeyer.Service
         {
             try { return noteRepository.deleteNoteByNoteID(noteID); } catch (Exception ex) { throw ex; }
         }
+
+        public string UploadeImage(string filePath, int noteID, int userID)
+        {
+            try { return noteRepository.UploadeImage(filePath, noteID, userID); } catch (Exception ex) { throw ex; }
+        }
     }
 }

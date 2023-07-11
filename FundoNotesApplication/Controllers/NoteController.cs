@@ -239,5 +239,19 @@ namespace FundoNotesApplication.Controllers
 
             return BadRequest(new ResponseModel<int> { status = false, message = "note not remove succesfully", response = noteID });
         }
+
+        [HttpPost("upload-image")]
+        public IActionResult UploadeImage(string filePath, int noteID)
+        {
+            int userID = Convert.ToInt32(User.FindFirst("UserID").Value);
+
+            string uplodeResult = noteBusiness.UploadeImage(filePath, noteID, userID);
+            if (uplodeResult != null)
+            {
+                return Ok(new ResponseModel<int> { status = true, message = "note remove succesfully", response = noteID });
+            }
+
+            return BadRequest(new ResponseModel<int> { status = true, message = "note remove succesfully", response = noteID });
+        }
     }
 }

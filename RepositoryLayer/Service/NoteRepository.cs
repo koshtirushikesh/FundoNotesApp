@@ -1,4 +1,6 @@
-﻿using CommanLayer;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommanLayer;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
@@ -242,6 +244,41 @@ namespace RepositoryLayer.Service
                     fundoContext.SaveChanges();
                 }
 
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string UploadeImage(string filePath, int noteID, int userID)
+        {
+            try
+            {
+                var findUser = fundoContext.Note.Where(x => x.UserID == userID);
+                if (findUser != null)
+                {
+                    var findNote = findUser.FirstOrDefault(x => x.NoteID == noteID);
+                    if (findNote != null)
+                    {
+                        Account account = new Account("dxhf61ohl", "938577685532666", "7QsftTYFw-C-bmhRK3cDHrisq_g");
+                        Cloudinary cloudinary = new Cloudinary(account);
+
+                        ImageUploadParams imageUploadParams = new ImageUploadParams();
+                        imageUploadParams.File = new FileDescription(filePath);
+                        imageUploadParams.PublicId = findNote.Title;
+
+                        ImageUploadResult uploadResult = cloudinary.Upload(imageUploadParams);
+
+                        findNote.LastUpdatedAt = DateTime.Now;
+                        findNote.ImageURL = uploadResult.Url.ToString();
+
+                        fundoContext.SaveChanges();
+                        return findNote.ImageURL;
+                    }
+
+                }
                 return null;
             }
             catch (Exception ex)

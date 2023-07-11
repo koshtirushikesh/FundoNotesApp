@@ -15,5 +15,6 @@ namespace RepositoryLayer.Interface
         public NoteEntity PindAndUnPinned(int noteID, int UserID);
         public NoteEntity TrashAndUnTrash(int noteID, int UserID);
         public string deleteNoteByNoteID(int noteID);
+        public string UploadeImage(string filePath, int noteID, int userID);
     }
 }
