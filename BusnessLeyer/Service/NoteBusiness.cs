@@ -29,7 +29,10 @@ namespace BusinessLeyer.Service
         {
             try { return noteRepository.GetAllNotesByUserID(userID); } catch (Exception ex) { throw ex; }
         }
-
+        public NoteEntity UpdateNote(int noteID, int userID, string descripction)
+        {
+            try { return noteRepository.UpdateNote(noteID, userID, descripction); } catch (Exception ex) { throw ex; }
+        }
         public NoteEntity ArchiveAndUnArchive(int noteID, int UserID)
         {
             try { return noteRepository.ArchiveAndUnArchive(noteID, UserID); } catch (Exception ex) { throw ex; }
@@ -49,5 +52,7 @@ namespace BusinessLeyer.Service
         {
             try { return noteRepository.GetNoteByNoteID(noteID, userID); } catch (Exception ex) { throw ex; }
         }
+
+
     }
 }

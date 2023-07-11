@@ -76,7 +76,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public NoteEntity GetNoteByNoteID(int noteID,int userID)
+        public NoteEntity GetNoteByNoteID(int noteID, int userID)
         {
             try
             {
@@ -89,20 +89,20 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public bool UpdateNote(int noteID, string descripction)
+        public NoteEntity UpdateNote(int noteID, int userID, string descripction)
         {
             try
             {
-                var result = fundoContext.Note.Where(x => x.NoteID == noteID).FirstOrDefault();
-                result.Description = descripction;
+                NoteEntity noteEntity = fundoContext.Note.Where(x => x.NoteID == noteID && x.UserID == userID).FirstOrDefault();
+                noteEntity.Description = descripction;
 
                 fundoContext.SaveChanges();
-                return true;
+                return noteEntity;
 
             }
             catch (Exception ex)
             {
-                return false;
+                return null;
                 throw ex;
             }
         }
@@ -175,7 +175,7 @@ namespace RepositoryLayer.Service
                     return noteEntity;
                 }
 
-                if(noteEntity.IsTrash == false)
+                if (noteEntity.IsTrash == false)
                 {
                     noteEntity.IsTrash = true;
                     fundoContext.SaveChanges();
@@ -206,7 +206,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public string AddLable(string LableName, int UserID ,int noteID)
+        public string AddLable(string LableName, int UserID, int noteID)
         {
             try
             {

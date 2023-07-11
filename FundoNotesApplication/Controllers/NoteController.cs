@@ -89,12 +89,34 @@ namespace FundoNotesApplication.Controllers
                 string userID = User.FindFirst("UserID").Value;
                 int userIDInt = Convert.ToInt32(userID);
 
-                NoteEntity noteEntity = noteBusiness.GetNoteByNoteID(noteID,userIDInt);
+                NoteEntity noteEntity = noteBusiness.GetNoteByNoteID(noteID, userIDInt);
                 if (noteEntity != null)
                 {
-                    return Ok(new ResponseModel<NoteEntity> { status = true, message = "note by noteID featched succesfully",response = noteEntity });
+                    return Ok(new ResponseModel<NoteEntity> { status = true, message = "note by noteID featched succesfully", response = noteEntity });
                 }
                 return BadRequest(new ResponseModel<String> { status = false, message = "note by noteID not featched succesfully" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost("update-note")]
+        public IActionResult UpdateNote(int noteID, string descripction)
+        {
+            try
+            {
+                string userID = User.FindFirst("UserID").Value;
+                int userIDInt = Convert.ToInt32(userID);
+
+                NoteEntity noteEntity = noteBusiness.UpdateNote(noteID, userIDInt, descripction);
+                if (noteEntity != null)
+                {
+                    return Ok(new ResponseModel<NoteEntity> { status = true, message = "note updated succesfully", response = noteEntity });
+                }
+
+                return BadRequest(new ResponseModel<NoteEntity> { status = true, message = "note not updated succesfully" });
             }
             catch (Exception ex)
             {

@@ -10,6 +10,7 @@ namespace RepositoryLayer.Interface
         public List<NoteEntity> GetAllNotes();
         public List<NoteEntity> GetAllNotesByUserID(int userID);
         public NoteEntity GetNoteByNoteID(int noteID, int userID);
+        public NoteEntity UpdateNote(int noteID, int userID, string descripction);
         public NoteEntity ArchiveAndUnArchive(int noteID, int UserID);
         public NoteEntity PindAndUnPinned(int noteID, int UserID);
         public NoteEntity TrashAndUnTrash(int noteID, int UserID);
