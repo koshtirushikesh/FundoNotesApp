@@ -2,9 +2,13 @@
 using CommanLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNotesApplication.Controllers
 {
@@ -13,10 +17,11 @@ namespace FundoNotesApplication.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteBusiness noteBusiness;
-
-        public NoteController(INoteBusiness noteBusiness)
+        private readonly IDistributedCache distributedCache;
+        public NoteController(INoteBusiness noteBusiness, IDistributedCache distributedCache)
         {
             this.noteBusiness = noteBusiness;
+            this.distributedCache = distributedCache;
         }
 
         [Authorize]
@@ -100,6 +105,38 @@ namespace FundoNotesApplication.Controllers
             {
                 throw ex;
             }
+        }
+
+        [HttpPost("get-all-note-by-redis")]
+        public async Task<IActionResult> GetAllNotesUSingRedis()
+        {
+            try
+            {
+                var CasheKey = "NotesList";
+
+                List<NoteEntity> noteList;
+                byte[] RediesNoteList = await distributedCache.GetAsync(CasheKey);
+
+                if (RediesNoteList != null)
+                {
+                    var serializedNoteList = Encoding.UTF8.GetString(RediesNoteList);
+                    noteList = JsonConvert.DeserializeObject<List<NoteEntity>>(serializedNoteList);
+                }
+                else
+                {
+                    noteList = noteBusiness.GetAllNotes();
+                    var serializedNoteList = JsonConvert.SerializeObject(noteList);
+                    var redisNoteList = Encoding.UTF8.GetBytes(serializedNoteList);
+                    var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(10)).SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                    await distributedCache.SetAsync(CasheKey, redisNoteList, options);
+                }
+                return Ok(noteList); //new ResponseModel<List<NoteEntity>> { status = true, message = "Get all notes", response = noteList }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel<NoteEntity> { status = false, message = ex.Message });
+            }
+
         }
 
         [HttpPost("update-note")]
@@ -192,5 +229,15 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
+        [HttpPost("delete-note")]
+        public IActionResult deleteNoteByNoteID(int noteID)
+        {
+            if (noteBusiness.deleteNoteByNoteID(noteID) != null)
+            {
+                return Ok(new ResponseModel<int> { status = true, message = "note remove succesfully", response = noteID });
+            }
+
+            return BadRequest(new ResponseModel<int> { status = false, message = "note not remove succesfully", response = noteID });
+        }
     }
 }

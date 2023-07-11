@@ -14,5 +14,6 @@ namespace RepositoryLayer.Interface
         public NoteEntity ArchiveAndUnArchive(int noteID, int UserID);
         public NoteEntity PindAndUnPinned(int noteID, int UserID);
         public NoteEntity TrashAndUnTrash(int noteID, int UserID);
+        public string deleteNoteByNoteID(int noteID);
     }
 }

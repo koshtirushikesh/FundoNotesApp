@@ -53,6 +53,9 @@ namespace BusinessLeyer.Service
             try { return noteRepository.GetNoteByNoteID(noteID, userID); } catch (Exception ex) { throw ex; }
         }
 
-
+        public string deleteNoteByNoteID(int noteID)
+        {
+            try { return noteRepository.deleteNoteByNoteID(noteID); } catch (Exception ex) { throw ex; }
+        }
     }
 }

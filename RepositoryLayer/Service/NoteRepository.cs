@@ -190,18 +190,38 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public bool deleteNoteByNoteID(int noteID)
+        public string deleteNoteByNoteID(int noteID)
         {
             try
             {
                 var resultLabel = fundoContext.Lable.Where(x => x.NoteID == noteID).FirstOrDefault();
-                var resultNote = fundoContext.Note.Where(x => x.NoteID == noteID).FirstOrDefault();
+                var resultNote = fundoContext.Note.Where(x => x.NoteID == noteID && x.IsTrash == true).FirstOrDefault();
 
-                return true;
+                if (resultNote == null)
+                {
+                    return "Note id is not present in data base";
+                }
+                if (resultLabel != null)
+                {
+                    fundoContext.Remove(resultLabel);
+                    fundoContext.Remove(resultNote);
+
+                    fundoContext.SaveChanges();
+                    return resultNote.NoteID.ToString();
+                }
+                else if (resultNote != null)
+                {
+                    fundoContext.Remove(resultNote);
+
+                    fundoContext.SaveChanges();
+                    return resultNote.NoteID.ToString();
+                }
+
+                return null;
             }
             catch (Exception ex)
             {
-                return false;
+                return null;
                 throw ex;
             }
         }

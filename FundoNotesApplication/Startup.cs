@@ -71,6 +71,8 @@ namespace FundoNotesApplication
             services.AddTransient<INoteRepository, NoteRepository>();
 
             services.AddSwaggerGen();
+            services.AddResponseCaching();
+            services.AddDistributedMemoryCache();
 
             ConfigureSwagger(services);
 
