@@ -70,6 +70,9 @@ namespace FundoNotesApplication
             services.AddTransient<INoteBusiness, NoteBusiness>();
             services.AddTransient<INoteRepository, NoteRepository>();
 
+            services.AddTransient<ILabelBusiness,LabelBusiness>();
+            services.AddTransient<ILabelRepository, LabelRepository>();
+
             services.AddSwaggerGen();
             services.AddResponseCaching();
             services.AddDistributedMemoryCache();
