@@ -2,6 +2,7 @@
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RepositoryLayer.Service
@@ -52,6 +53,45 @@ namespace RepositoryLayer.Service
                     fundoContext.SaveChanges();
                     return lableEntity;
                 }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public LableEntity RemoveLabel(int labelID, int noteID, int userID)
+        {
+            try
+            {
+                LableEntity lableEntity = fundoContext.Lable.Where(x => x.LableID == labelID && x.NoteID == noteID && x.UserID == userID).FirstOrDefault();
+
+                if (lableEntity != null)
+                {
+                    fundoContext.Remove(lableEntity);
+                    fundoContext.SaveChanges();
+
+                    return lableEntity;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<LableEntity> GetAllNoteByLabelID(int noteID, int userID)
+        {
+            try
+            {
+                List<LableEntity> userLabelResult = fundoContext.Lable.Where(x => x.NoteID == noteID && x.UserID == userID).ToList();
+                if (userLabelResult != null)
+                {
+                    return userLabelResult;
+                }
+
                 return null;
             }
             catch (Exception ex)

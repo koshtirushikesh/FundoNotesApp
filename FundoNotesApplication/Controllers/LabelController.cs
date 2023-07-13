@@ -3,6 +3,7 @@ using CommanLayer;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Entity;
 using System;
+using System.Collections.Generic;
 
 namespace FundoNotesApplication.Controllers
 {
@@ -46,12 +47,40 @@ namespace FundoNotesApplication.Controllers
                     return Ok(new ResponseModel<LableEntity> { status = true, message = "label updated succesfully", response = lableEntity });
                 }
 
-                return BadRequest(new ResponseModel<LableEntity> { status=false , message = "label not updatd succesfully"});
+                return BadRequest(new ResponseModel<LableEntity> { status = false, message = "label not updatd succesfully" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        [HttpPost("remove-label")]
+        public IActionResult RemoveLabel(int labelID, int noteID)
+        {
+            int userID = Convert.ToInt32(User.FindFirst("UserID").Value);
+
+            LableEntity lableEntity = labelBusiness.RemoveLabel(labelID, noteID, userID);
+            if (lableEntity != null)
+            {
+                return Ok(new ResponseModel<LableEntity> { status = true, message = "label remove succesfully", response = lableEntity });
+            }
+
+            return BadRequest(new ResponseModel<string> { status = false, message = "label not remove succesfuly" });
+        }
+
+        [HttpPost("get-all-label-by-noteid")]
+        public IActionResult GetAllLabelBynoteID(int noteID)
+        {
+            int userID = Convert.ToInt32(User.FindFirst("UserID").Value);
+            List<LableEntity> labelEntityList = labelBusiness.GetAllNoteByLabelID(noteID, userID);
+            if (labelEntityList != null)
+            {
+                return Ok(new ResponseModel<List<LableEntity>> { status = true, message = "all label succesfully featch", response = labelEntityList });
+            }
+
+            return BadRequest(new ResponseModel<string> { status = false, message = "all label not succesfuly featch" });
+        }
+
     }
 }

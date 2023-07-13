@@ -3,6 +3,7 @@ using CommanLayer;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RepositoryLayer.Entity;
 using System;
 using System.Threading.Tasks;
@@ -15,11 +16,13 @@ namespace FundoNotesApplication.Controllers
     {
         private readonly IUserBusiness userBusiness;
         private readonly IBus _bus;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserBusiness userBusiness, IBus bus)
+        public UserController(IUserBusiness userBusiness, IBus bus , ILogger<UserController> logger)
         {
             this.userBusiness = userBusiness;
             this._bus = bus;
+            _logger = logger;
         }
 
         // localhost /api/controlerName/HttpName
@@ -53,15 +56,18 @@ namespace FundoNotesApplication.Controllers
 
                 if (login != null)
                 {
+                    _logger.LogDebug("user id found in database");
                     return Ok(new ResponseModel<string> { status = true, message = "login succesfull", response = login });
                 }
                 else
                 {
+                    _logger.LogDebug("user id not found in data base");
                     return BadRequest(new ResponseModel<string> { status = false, message = "login not succesfull" });
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw ex;
             }
         }

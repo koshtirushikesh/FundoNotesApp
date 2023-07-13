@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="cloudscribe.HtmlAgilityPack" Version="1.0.1" />
     <PackageReference Include="MassTransit" Version="6.2.0" />
     <PackageReference Include="MassTransit.AspNetCore" Version="6.2.0" />
@@ -22,6 +30,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
   </ItemGroup>
@@ -29,6 +38,14 @@
   <ItemGroup>
     <ProjectReference Include="..\BusnessLeyer\BusinessLeyer.csproj" />
     <ProjectReference Include="..\RepositoryLayer\RepositoryLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Loges\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Nlog.config" />
   </ItemGroup>
 
 
