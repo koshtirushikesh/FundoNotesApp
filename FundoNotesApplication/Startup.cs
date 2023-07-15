@@ -73,6 +73,9 @@ namespace FundoNotesApplication
             services.AddTransient<ILabelBusiness,LabelBusiness>();
             services.AddTransient<ILabelRepository, LabelRepository>();
 
+            services.AddTransient<ICollaborationBusiness, CollaborationBusiness>();
+            services.AddTransient<ICollaborationRepository, CollaborationRepository>();
+
             services.AddSwaggerGen();
             services.AddResponseCaching();
             services.AddDistributedMemoryCache();

@@ -41,11 +41,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Loges\" />
+    <None Include="NLog.config" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Nlog.config" />
+    <Folder Include="Logs\" />
   </ItemGroup>
 
 

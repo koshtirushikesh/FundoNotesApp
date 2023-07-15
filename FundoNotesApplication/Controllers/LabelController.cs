@@ -34,7 +34,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("update-label")]
+        [HttpPatch("update-label")]
         public IActionResult UpdateLabel(string labelName, int noteID)
         {
             try
@@ -55,7 +55,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("remove-label")]
+        [HttpDelete("remove-label")]
         public IActionResult RemoveLabel(int labelID, int noteID)
         {
             int userID = Convert.ToInt32(User.FindFirst("UserID").Value);
@@ -69,7 +69,7 @@ namespace FundoNotesApplication.Controllers
             return BadRequest(new ResponseModel<string> { status = false, message = "label not remove succesfuly" });
         }
 
-        [HttpPost("get-all-label-by-noteid")]
+        [HttpGet("get-all-label-by-noteid")]
         public IActionResult GetAllLabelBynoteID(int noteID)
         {
             int userID = Convert.ToInt32(User.FindFirst("UserID").Value);

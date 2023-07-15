@@ -30,6 +30,7 @@ namespace CommanLayer
                 smtpClient.Credentials = credential;
 
                 smtpClient.Send(message);
+                //smtpClient.Send(emailFrom,emailTo,subject ,body);
 
                 return emailTo;
             }

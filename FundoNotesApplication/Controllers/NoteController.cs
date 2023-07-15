@@ -46,7 +46,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("get-all-note")]
+        [HttpGet("get-all-note")]
         public IActionResult GetAllNote()
         {
             try
@@ -65,7 +65,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("get-all-notes-by-userid")]
+        [HttpGet("get-all-notes-by-userid")]
         public IActionResult GetAllNoteByUserID()
         {
             try
@@ -86,7 +86,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("get-note-by-noteID")]
+        [HttpGet("get-note-by-noteID")]
         public IActionResult GetNoteByNoteID(int noteID)
         {
             try
@@ -107,7 +107,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("get-all-note-by-redis")]
+        [HttpGet("get-all-note-by-redis")]
         public async Task<IActionResult> GetAllNotesUSingRedis()
         {
             try
@@ -139,7 +139,7 @@ namespace FundoNotesApplication.Controllers
 
         }
 
-        [HttpPost("update-note")]
+        [HttpPatch("update-note")]
         public IActionResult UpdateNote(int noteID, string descripction)
         {
             try
@@ -229,7 +229,7 @@ namespace FundoNotesApplication.Controllers
             }
         }
 
-        [HttpPost("delete-note")]
+        [HttpDelete("delete-note")]
         public IActionResult deleteNoteByNoteID(int noteID)
         {
             if (noteBusiness.deleteNoteByNoteID(noteID) != null)

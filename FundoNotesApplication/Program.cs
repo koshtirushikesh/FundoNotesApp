@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Fluent;
 using NLog.Web;
 using System.IO;
 
@@ -11,8 +11,11 @@ namespace FundoNotesApplication
     {
         public static void Main(string[] args)
         {
-            var logPath = Path.Combine(Directory.GetCurrentDirectory(),"Loges");
-            NLog.GlobalDiagnosticsContext.Set("LogDirectory",logPath);
+            var logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+            NLog.GlobalDiagnosticsContext.Set("LogDirectory", logPath);
+
+            var Logger = NLogBuilder.ConfigureNLog("NLog.config").GetCurrentClassLogger();
+            Logger.Debug("The Application Started");
 
             CreateHostBuilder(args).Build().Run();
         }
