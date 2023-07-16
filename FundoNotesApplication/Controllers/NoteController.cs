@@ -1,5 +1,6 @@
 ﻿using BusinessLeyer.Interface;
 using CommanLayer;
+using MassTransit.Saga.Policies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -36,7 +37,7 @@ namespace FundoNotesApplication.Controllers
                 var result = noteBusiness.AddingNote(userIDInt, noteModel);
                 if (result != null)
                 {
-                    return Ok(new ResponseModel<NoteModel> { status = true, message = "note added succesfully", response = noteModel });
+                    return Ok(new ResponseModel<NoteModel> { status = true, message = "note added succesfully", response = result });
                 }
                 return BadRequest(new ResponseModel<NoteModel> { status = false, message = "note not added" });
             }
@@ -130,7 +131,8 @@ namespace FundoNotesApplication.Controllers
                     var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(10)).SetSlidingExpiration(TimeSpan.FromMinutes(5));
                     await distributedCache.SetAsync(CasheKey, redisNoteList, options);
                 }
-                return Ok(noteList); //new ResponseModel<List<NoteEntity>> { status = true, message = "Get all notes", response = noteList }
+                return Ok(new ResponseModel<List<NoteEntity>> { status = true, message = "Get all notes", response = noteList });
+                //new ResponseModel<List<NoteEntity>> { status = true, message = "Get all notes", response = noteList }
             }
             catch (Exception ex)
             {
@@ -248,10 +250,34 @@ namespace FundoNotesApplication.Controllers
             string uplodeResult = noteBusiness.UploadeImage(filePath, noteID, userID);
             if (uplodeResult != null)
             {
-                return Ok(new ResponseModel<int> { status = true, message = "note remove succesfully", response = noteID });
+                return Ok(new ResponseModel<string> { status = true, message = "Image uploade succesfully", response = uplodeResult });
             }
 
-            return BadRequest(new ResponseModel<int> { status = true, message = "note remove succesfully", response = noteID });
+            return BadRequest(new ResponseModel<int> { status = false, message = "Image not uploade succesfully" });
+        }
+
+        [HttpPost("add-reminder")]
+        public IActionResult AddReminder(DateTime dateTime, int noteID)
+        {
+            int userID = Convert.ToInt32(User.FindFirst("UserID").Value);
+            NoteEntity noteEntity = noteBusiness.AddReminder(dateTime, noteID, userID);
+            if (noteEntity != null)
+            {
+                return Ok(new ResponseModel<NoteEntity> { status = true, message = "add reminder succesfully", response = noteEntity });
+            }
+            return BadRequest(new ResponseModel<string> { status = false, message = "add reminder unsuccesfully" });
+        }
+
+        [HttpPatch("change-color")]
+        public IActionResult ChangeColore(string color, int noteID)
+        {
+            int userID = Convert.ToInt32(User.FindFirst("UserID").Value);
+            NoteEntity noteEntity = noteBusiness.ChangeColor(color, noteID, userID);
+            if(noteEntity != null)
+            {
+                return Ok(new ResponseModel<NoteEntity> { status= true ,message = "change color succesfully" , response = noteEntity });
+            }
+            return BadRequest(new ResponseModel<string> { status = false, message = "change color unsuccesfully" });
         }
     }
 }

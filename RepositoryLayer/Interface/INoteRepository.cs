@@ -1,5 +1,6 @@
 ﻿using CommanLayer;
 using RepositoryLayer.Entity;
+using System;
 using System.Collections.Generic;
 
 namespace RepositoryLayer.Interface
@@ -16,5 +17,7 @@ namespace RepositoryLayer.Interface
         public NoteEntity TrashAndUnTrash(int noteID, int UserID);
         public string deleteNoteByNoteID(int noteID);
         public string UploadeImage(string filePath, int noteID, int userID);
+        public NoteEntity ChangeColor(string color, int noteID, int userID);
+        public NoteEntity AddReminder(DateTime dateTime, int noteID, int userID);
     }
 }

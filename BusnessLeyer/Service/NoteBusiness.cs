@@ -62,5 +62,15 @@ namespace BusinessLeyer.Service
         {
             try { return noteRepository.UploadeImage(filePath, noteID, userID); } catch (Exception ex) { throw ex; }
         }
+
+        public NoteEntity AddReminder(DateTime dateTime, int noteID, int userID)
+        {
+            try { return noteRepository.AddReminder(dateTime,noteID,userID); } catch (Exception ex) { throw ex; }
+        }
+
+        public NoteEntity ChangeColor(string color, int noteID, int userID)
+        {
+            try { return noteRepository.ChangeColor(color, noteID, userID); } catch(Exception ex) { throw ex; } 
+        }
     }
 }

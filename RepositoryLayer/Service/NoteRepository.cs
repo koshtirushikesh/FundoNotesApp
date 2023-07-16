@@ -228,22 +228,39 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public string AddLable(string LableName, int UserID, int noteID)
+        public NoteEntity ChangeColor(string color, int noteID, int userID)
         {
             try
             {
-                var result = fundoContext.Note.Where(x => x.UserID == UserID && x.NoteID == noteID).FirstOrDefault();
-                if (result != null)
+                NoteEntity noteEntity = fundoContext.Note.Where(x => x.NoteID == noteID && x.UserID == userID).FirstOrDefault();
+
+                if (noteEntity != null)
                 {
-                    LableEntity lableEntity = new LableEntity();
-                    lableEntity.LableName = LableName;
-                    lableEntity.UserID = UserID;
-                    lableEntity.NoteID = result.NoteID;
-
-                    fundoContext.Add(lableEntity);
+                    noteEntity.Colour = color;
                     fundoContext.SaveChanges();
-                }
 
+                    return noteEntity;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public NoteEntity AddReminder(DateTime dateTime, int noteID, int userID)
+        {
+            try
+            {
+                NoteEntity noteEntity = fundoContext.Note.Where(x => x.NoteID == noteID && x.UserID == userID).FirstOrDefault();
+                if (noteEntity != null)
+                {
+                    noteEntity.Reminder = dateTime;
+                    fundoContext.SaveChanges();
+
+                    return noteEntity;
+                }
                 return null;
             }
             catch (Exception ex)
@@ -286,6 +303,6 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-       
+
     }
 }
